@@ -1,0 +1,121 @@
+Project Title: Personal Finance Management API
+Project Description: This RESTful API allows users to manage their finances by creating accounts, tracking expenses, setting budgets, and generating financial reports. It covers CRUD operations, authentication, authorization, data validation, and database relationships.
+
+Key Features and Endpoints:
+1. User Authentication and Authorization
+Signup (POST /auth/signup): Allows users to create an account by providing their username, email, and password.
+Login (POST /auth/login): Authenticates users and provides a JWT token for future requests.
+Password Reset (POST /auth/reset-password): Sends an email with a password reset link to the user.
+Logout (POST /auth/logout): Invalidates the user’s session by deactivating their token.
+2. User Profile
+Get Profile (GET /user/profile): Retrieves the user’s profile information.
+Update Profile (PUT /user/profile): Allows users to update their profile (e.g., username, email).
+Change Password (PUT /user/change-password): Allows users to change their password.
+3. Account Management
+Create Account (POST /accounts): Creates a financial account (e.g., Bank, Credit Card, Cash) with an initial balance.
+List Accounts (GET /accounts): Retrieves a list of all user’s financial accounts.
+Update Account (PUT /accounts/:id): Allows users to update account details, like renaming it.
+Delete Account (DELETE /accounts/:id): Deletes an account, with optional cascading to delete associated transactions.
+4. Transaction Management
+Create Transaction (POST /transactions): Creates a transaction associated with an account. Transactions can be an expense, income, or transfer.
+List Transactions (GET /transactions): Retrieves a paginated list of transactions, with filters by date range, account, or type (income/expense/transfer).
+Update Transaction (PUT /transactions/:id): Allows users to edit a transaction (e.g., change amount, category).
+Delete Transaction (DELETE /transactions/:id): Deletes a specific transaction.
+Transaction Categories (GET /transactions/categories): Lists categories to tag transactions (e.g., Food, Utilities, Entertainment).
+5. Budgeting
+Create Budget (POST /budgets): Allows users to set a monthly budget for a specific category (e.g., $500 for Food).
+List Budgets (GET /budgets): Shows all active budgets with their spent amount and remaining balance.
+Update Budget (PUT /budgets/:id): Allows users to adjust their budget (e.g., increase or decrease monthly limits).
+Delete Budget (DELETE /budgets/:id): Deletes a specific budget.
+6. Financial Reports
+Monthly Report (GET /reports/monthly): Generates a summary of income, expenses, and remaining balances per category for the month.
+Yearly Report (GET /reports/yearly): Generates a yearly summary similar to the monthly report.
+Category Breakdown (GET /reports/categories): Provides a breakdown of expenses per category in percentage and dollar amount.
+7. Settings and Preferences
+Set Currency (PUT /settings/currency): Allows users to set their preferred currency for transactions and reports.
+Notification Preferences (PUT /settings/notifications): Enables users to receive notifications for large transactions, low balance alerts, or budget overspending.
+
+
+Implementation Details
+1. Tech Stack
+Framework: Express (TypeScript)
+Authentication: JWT for session management with middleware to protect routes.
+ORM: Prisma for handling database operations and complex queries.
+Database: PostgreSQL or SQLite (for easier local development).
+Validation: Middleware using libraries like zod or class-validator for request validation.
+2. Database Schema (Sample Structure)
+User: Stores user details like id, username, email, and password.
+Account: Represents user accounts with fields like id, name, type, and balance.
+Transaction: Stores each transaction with fields like id, amount, date, type, category, and foreign keys for Account.
+Budget: Holds monthly budgets with fields like id, category, amount, startDate, and endDate.
+3. Middleware and Utilities
+Authentication Middleware: Checks JWT token validity and decodes user data to authorize requests.
+Error Handling Middleware: Centralized error handling for better response consistency.
+Request Validation Middleware: Validates payloads using TypeScript types or a schema library like Zod.
+Rate Limiting: Protect against abuse by limiting the number of requests from an IP.
+4. Testing
+Unit Tests: For individual functions and services using Jest.
+Integration Tests: For API endpoints with a focus on major workflows, such as login, creating transactions, and generating reports.
+Mocking: Use mock data for database interactions in tests for isolated testing.
+
+
+Potential Stretch Features
+Bank API Integration: Sync with a real or mock bank API to pull transactions automatically.
+Graph-based Reports: Add an endpoint to provide data for frontend graphs (e.g., total expense by category).
+Recurring Transactions: Allow users to schedule recurring transactions (e.g., monthly rent).
+Multi-Currency Support: Enable users to work with accounts in different currencies, with conversion rates.
+Export Data: Export transactions, budgets, and reports to CSV or PDF.
+
+Structure
+
+personal-finance-api/
+├── src/
+│   ├── config/
+│   │   └── index.ts               # Configurations (e.g., environment variables, database connection)
+│   ├── controllers/
+│   │   ├── auth.controller.ts     # Authentication controller (signup, login, logout, etc.)
+│   │   ├── user.controller.ts     # User profile and settings controller
+│   │   ├── account.controller.ts  # Account management controller
+│   │   ├── transaction.controller.ts  # Transaction management controller
+│   │   ├── budget.controller.ts   # Budget management controller
+│   │   └── report.controller.ts   # Financial reports controller
+│   ├── middlewares/
+│   │   ├── auth.middleware.ts     # Authentication middleware (JWT verification)
+│   │   ├── error.middleware.ts    # Error handling middleware
+│   │   └── validation.middleware.ts  # Validation middleware
+│   ├── models/
+│   │   └── prisma/                # Prisma models
+│   │       └── schema.prisma      # Prisma schema file for defining database models
+│   ├── routes/
+│   │   ├── auth.routes.ts         # Auth routes (e.g., /auth/login, /auth/signup)
+│   │   ├── user.routes.ts         # User-related routes
+│   │   ├── account.routes.ts      # Account-related routes
+│   │   ├── transaction.routes.ts  # Transaction-related routes
+│   │   ├── budget.routes.ts       # Budget-related routes
+│   │   └── report.routes.ts       # Report-related routes
+│   ├── services/
+│   │   ├── auth.service.ts        # Business logic for authentication
+│   │   ├── user.service.ts        # Business logic for user profile management
+│   │   ├── account.service.ts     # Business logic for account management
+│   │   ├── transaction.service.ts # Business logic for transactions
+│   │   ├── budget.service.ts      # Business logic for budgeting
+│   │   └── report.service.ts      # Business logic for reports
+│   ├── utils/
+│   │   ├── jwt.util.ts            # Utility functions for JWT (signing, verifying tokens)
+│   │   ├── hash.util.ts           # Utility functions for hashing passwords
+│   │   └── logger.util.ts         # Logger utility for structured logging
+│   ├── app.ts                     # Express app setup (middleware, routes)
+│   ├── server.ts                  # Server startup and connection to the database
+├── prisma/
+│   └── migrations/                # Prisma migrations for database
+├── tests/                         # Unit and integration tests
+│   ├── controllers/               # Test files for controllers
+│   ├── services/                  # Test files for services
+│   ├── middlewares/               # Test files for middlewares
+│   └── utils/                     # Test files for utility functions
+├── .env                           # Environment variables
+├── .env.example                   # Example environment file for configuration
+├── .gitignore                     # Git ignore file
+├── package.json                   # Project dependencies and scripts
+├── tsconfig.json                  # TypeScript configuration
+└── README.md                      # Project documentation
