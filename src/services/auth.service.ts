@@ -16,17 +16,14 @@ class AuthService {
 		return { user: userWithoutPassword, token }
 	}
 
-	async login(email: string, password: string): Promise<UserResponse> {
+	async login(email: string, password: string): Promise<string> {
 		const user = await userService.getByEmail(email);
 		if (!user) throw new Error('User not found');
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (!isPasswordValid) throw new Error('Invalid credentials');
-		const { password: _password, ...userWithoutPassword } = user;
 		const token = signJWT(user.id);
-		return {
-			user: userWithoutPassword, token
-		}
+		return token;
 	}
 
 }

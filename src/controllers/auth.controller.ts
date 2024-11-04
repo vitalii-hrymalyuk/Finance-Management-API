@@ -23,7 +23,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { email, password } = req.body;
 
-		const { user, token } = await authService.login(email, password);
+		const token = await authService.login(email, password);
 
 		res.cookie('jwt-token', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
 		res.status(200).json({ message: 'Login successful' });
