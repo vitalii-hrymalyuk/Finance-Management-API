@@ -6,4 +6,6 @@ interface IUser {
 	password: string
 }
 
-export { IUser }
+type UserWithoutPassword = Omit<IUser, 'password'>;
+type UserResponse = { user: UserWithoutPassword; token: string };
+export { IUser, UserResponse }
