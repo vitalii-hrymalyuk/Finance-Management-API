@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import { authService } from '../services/auth.service';
+import { BadRequestError } from '../common/errors/BadRequestError';
+import { NotFoundError } from '../common/errors/NotFoundError';
 
 const signup = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -15,7 +17,11 @@ const signup = async (req: Request, res: Response): Promise<void> => {
 		res.status(201).json(user);
 	} catch (error) {
 		console.log('Error signing up', error);
-		res.status(500).json(error);
+		if (error instanceof BadRequestError) {
+			res.status(error.statusCode).json({ message: error.message });
+		} else {
+			res.status(500).json({ message: 'Internal server error' });
+		}
 	}
 }
 
@@ -30,7 +36,11 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
 	} catch (error) {
 		console.log('Error logging in', error);
-		res.status(500).json(error);
+		if (error instanceof NotFoundError || error instanceof BadRequestError) {
+			res.status(error.statusCode).json({ message: error.message });
+		} else {
+			res.status(500).json({ message: 'Internal server error' });
+		}
 	}
 }
 
