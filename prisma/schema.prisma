@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,13 +8,79 @@ datasource db {
 }
 
 model User {
-  id String @id  @default(cuid())
+  id           String       @id  @default(cuid())
+  username     String
+  email        String       @unique
+  password     String
 
-  username String
-
-  email String @unique
-
-  password String
+  accounts     Account[]
+  transactions Transaction[]
+  budgets      Budget[]
 
   @@map("user")
+}
+
+model Account {
+  id           Int          @id  @default(autoincrement())
+  name         String
+  type         AccountType
+  balance      Float
+
+  transactions Transaction[]
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @map("user_id")
+
+  @@map("account")
+}
+
+model Transaction {
+  id           Int           @id  @default(autoincrement())
+  amount       Float
+  date         DateTime
+  type         TransactionType
+  category     String
+  description  String?
+
+  account      Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId    Int           @map("account_id")
+
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @map("user_id")
+
+  @@map("transaction")
+}
+
+model Budget {
+  id           Int          @id  @default(autoincrement())
+  category     BudgetCategory 
+  amount       Float
+  startDate    DateTime
+  endDate      DateTime
+
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String       @map("user_id")
+
+  @@map("budget")
+}
+
+enum AccountType {
+  BANK
+  CREDIT_CARD
+  CASH
+}
+
+enum BudgetCategory {
+  FOOD
+  UTILITIES
+  ENTERTAINMENT
+  TRANSPORTATION
+  HEALTH
+  SAVINGS
+  OTHER
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
+  TRANSFER
 }

@@ -57,7 +57,12 @@ Rate Limiting: Protect against abuse by limiting the number of requests from an 
 Unit Tests: For individual functions and services using Jest.
 Integration Tests: For API endpoints with a focus on major workflows, such as login, creating transactions, and generating reports.
 Mocking: Use mock data for database interactions in tests for isolated testing.
-
+5. Relations
+User ⟶ Account (1-to-Many)
+User ⟶ Transaction (1-to-Many)
+User ⟶ Budget (1-to-Many)
+Account ⟶ Transaction (1-to-Many)
+Cascade deleting, when user deletes an account transaction related to that account should be deleted.
 
 Potential Stretch Features
 Bank API Integration: Sync with a real or mock bank API to pull transactions automatically.
