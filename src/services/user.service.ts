@@ -53,24 +53,30 @@ class UserService {
 		return user
 	}
 
-	async getById(id: string): Promise<User | null> {
-		return await prisma.user.findUnique({
+	async getById(id: string): Promise<User> {
+		const user = await prisma.user.findUnique({
 			where: {
-				id
-			}
-		})
-	}
-
-	async getByEmail(email: string) {
-		return await prisma.user.findUnique({
-			where: {
-				email
+				id,
 			},
 			include: {
 				accounts: true,
 				transactions: true,
 				budgets: true,
 			},
+		});
+
+		if (!user) {
+			throw new NotFoundError('User not found');
+		}
+		return user as unknown as User;
+	}
+
+
+	async getByEmail(email: string) {
+		return await prisma.user.findUnique({
+			where: {
+				email
+			}
 		})
 	}
 

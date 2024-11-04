@@ -33,6 +33,10 @@ export type Account = {
 	user?: User;
 };
 
+export interface CreateAccount extends Pick<Account, 'name' | 'type' | 'balance'> {
+
+}
+
 export type Transaction = {
 	id: number;
 	amount: number;
