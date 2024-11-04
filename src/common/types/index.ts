@@ -62,3 +62,7 @@ export type Budget = {
 	userId: string;
 	user?: User;
 };
+
+export interface ErrorResponse {
+	message: string;
+}

@@ -14,11 +14,10 @@
     "allowSyntheticDefaultImports": true // Allow default imports from modules with no default export
   },
   "include": [
-    "src/**/*.ts",
-    "src/types/express/index.d.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist"
-  ] // Exclude node_modules and dist directories
+  ]
 }

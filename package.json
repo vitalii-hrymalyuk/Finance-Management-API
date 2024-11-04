@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon --watch src --exec ts-node src/app.ts"
+    "start:dev": "nodemon --watch src --exec ts-node --files src/app.ts"
   },
   "keywords": [],
   "author": "",
