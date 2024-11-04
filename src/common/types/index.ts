@@ -1,3 +1,5 @@
+import { User } from './auth.types';
+
 export enum TransactionType {
 	EXPENSE = "expense",
 	INCOME = "income",
@@ -20,15 +22,6 @@ export enum BudgetCategory {
 	OTHER = "OTHER",
 }
 
-export type User = {
-	id: string;
-	username: string;
-	email: string;
-	password: string;
-	accounts?: Account[];
-	transactions?: Transaction[];
-	budgets?: Budget[];
-};
 
 export type Account = {
 	id: number;

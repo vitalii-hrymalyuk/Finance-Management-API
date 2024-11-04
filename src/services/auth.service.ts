@@ -1,12 +1,12 @@
 import { BadRequestError } from '../common/errors/BadRequestError';
 import { NotFoundError } from '../common/errors/NotFoundError';
-import { IUser, UserResponse } from '../common/types/auth.types'
+import { ICreateUser, UserResponse } from '../common/types/auth.types'
 import { signJWT } from '../utils/jwt.utils';
 import { userService } from './user.service';
 import * as bcrypt from 'bcryptjs'
 
 class AuthService {
-	async signup(data: IUser): Promise<UserResponse> {
+	async signup(data: ICreateUser): Promise<UserResponse> {
 
 		const oldUser = await userService.getByEmail(data.email);
 		if (oldUser) throw new BadRequestError('User already exists');

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { userService } from '../services/user.service';
 import { BadRequestError } from '../common/errors/BadRequestError';
+import { NotFoundError } from '../common/errors/NotFoundError';
 
 const updateUser = async (req: Request, res: Response) => {
 	try {
@@ -41,4 +42,26 @@ const changePassword = async (req: Request, res: Response) => {
 	}
 }
 
-export { updateUser, changePassword };
+const getUserProfile = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+
+		if (!userId) {
+			res.status(401).json({ message: 'Unauthorized' });
+			return;
+		}
+
+		const user = await userService.getUserProfile(userId);	
+
+		res.status(200).json(user);
+	} catch (error) {
+		console.log('Error in getUserProfile', error);
+		if (error instanceof NotFoundError) {
+			res.status(error.statusCode).json({ message: error.message });
+		} else {
+			res.status(500).json({ message: 'Internal server error' });
+		}
+	}
+}
+
+export { updateUser, changePassword, getUserProfile };

@@ -1,11 +1,12 @@
 import { BadRequestError } from '../common/errors/BadRequestError';
-import { IUpdateUser, IUser } from '../common/types/auth.types';
+import { NotFoundError } from '../common/errors/NotFoundError';
+import { ICreateUser, IUpdateUser, User } from '../common/types/auth.types';
 import prisma from '../db/prismaClient'
 import * as bcrypt from 'bcryptjs'
 
 class UserService {
 
-	async create(data: IUser) {
+	async create(data: ICreateUser) {
 
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(data.password, salt);
@@ -18,7 +19,7 @@ class UserService {
 		})
 	}
 
-	async update(id: string, data: IUpdateUser): Promise<Omit<IUser, 'password'>> {
+	async update(id: string, data: IUpdateUser): Promise<Omit<User, 'password'>> {
 
 		const user = await prisma.user.update({
 			where: {
@@ -32,7 +33,7 @@ class UserService {
 		return userWithoutPassword;
 	}
 
-	async changePassword(id: string, newPassword: string): Promise<Omit<IUser, 'password'>> {
+	async changePassword(id: string, newPassword: string): Promise<Omit<User, 'password'>> {
 
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -52,7 +53,7 @@ class UserService {
 		return user
 	}
 
-	async getById(id: string) {
+	async getById(id: string): Promise<User | null> {
 		return await prisma.user.findUnique({
 			where: {
 				id
@@ -64,8 +65,28 @@ class UserService {
 		return await prisma.user.findUnique({
 			where: {
 				email
-			}
+			},
+			include: {
+				accounts: true,
+				transactions: true,
+				budgets: true,
+			},
 		})
+	}
+
+	async getUserProfile(id: string) {
+		const user = await this.getById(id);
+
+		if (!user) throw new NotFoundError('User not found');
+
+		const { password, ...userWithoutPassword } = user;
+
+		return {
+			...userWithoutPassword,
+			accounts: user.accounts || [],
+			transactions: user.transactions || [],
+			budgets: user.budgets || [],
+		};
 	}
 }
 
