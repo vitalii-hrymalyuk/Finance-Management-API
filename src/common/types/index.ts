@@ -33,9 +33,9 @@ export type Account = {
 	user?: User;
 };
 
-export interface CreateAccount extends Pick<Account, 'name' | 'type' | 'balance'> {
+export interface CreateAccount extends Pick<Account, 'name' | 'type' | 'balance'> { }
 
-}
+export interface UpdateAccount extends Partial<Omit<Account, 'userId' | 'id' | 'user' | 'transactions'>> { }
 
 export type Transaction = {
 	id: number;
