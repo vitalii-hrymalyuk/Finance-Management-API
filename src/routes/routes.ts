@@ -1,4 +1,4 @@
-import { Application } from 'express'
+import { Application } from 'express';
 import { authRoutes } from './auth.routes';
 import { userRoutes } from './user.routes';
 import { accountRoutes } from './account.routes';

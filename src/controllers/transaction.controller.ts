@@ -66,10 +66,15 @@ const deleteTransaction = async (req: Request, res: Response): Promise<void> => 
 			return;
 		}
 
-		const accountId = req.body.accountId;
-		const transactionId = req.params.id;
+		const accountId = parseInt(req.body.accountId as string, 10);
+		const transactionId = parseInt(req.params.id, 10);
 
-		const transaction = await transactionService.delete(parseInt(transactionId), accountId, userId);
+		if (isNaN(accountId) || isNaN(transactionId)) {
+			res.status(400).json({ message: 'Invalid accountId or transactionId' });
+			return;
+		}
+
+		const transaction = await transactionService.delete(transactionId, accountId, userId);
 		res.status(200).json(transaction);
 	} catch (error) {
 		console.log('Error deleting transaction', error);
