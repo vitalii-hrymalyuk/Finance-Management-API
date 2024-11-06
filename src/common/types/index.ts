@@ -1,6 +1,7 @@
 import { User } from './auth.types';
+import { TransactionType } from '@prisma/client'
 
-export enum TransactionType {
+export enum TransactionTypeCustom {
 	EXPENSE = "expense",
 	INCOME = "income",
 	TRANSFER = "transfer",
@@ -12,7 +13,7 @@ export enum AccountType {
 	CASH = "CASH",
 }
 
-export enum BudgetCategory {
+export enum Category {
 	FOOD = "FOOD",
 	UTILITIES = "UTILITIES",
 	ENTERTAINMENT = "ENTERTAINMENT",
@@ -21,7 +22,6 @@ export enum BudgetCategory {
 	SAVINGS = "SAVINGS",
 	OTHER = "OTHER",
 }
-
 
 export type Account = {
 	id: number;
@@ -36,6 +36,10 @@ export type Account = {
 export interface CreateAccount extends Pick<Account, 'name' | 'type' | 'balance'> { }
 
 export interface UpdateAccount extends Partial<Omit<Account, 'userId' | 'id' | 'user' | 'transactions'>> { }
+
+export interface CreateTransaction extends Omit<Transaction, 'id' | 'accountId' | 'userId' | 'account' | 'user'> { }
+
+export interface UpdateTransaction extends Partial<CreateTransaction> { }
 
 export type Transaction = {
 	id: number;
@@ -52,7 +56,7 @@ export type Transaction = {
 
 export type Budget = {
 	id: number;
-	category: BudgetCategory;
+	category: Category;
 	amount: number;
 	startDate: Date;
 	endDate: Date;
