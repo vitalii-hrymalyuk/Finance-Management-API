@@ -64,6 +64,10 @@ export type Budget = {
 	user?: User;
 };
 
+export interface CreateBudget extends Omit<Budget, 'id' | 'userId' | 'user'> { }
+
+export interface UpdateBudget extends Partial<CreateBudget> { }
+
 export interface ErrorResponse {
 	message: string;
 }
