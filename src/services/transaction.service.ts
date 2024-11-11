@@ -1,4 +1,4 @@
-import { CreateTransaction, UpdateTransaction } from '../common/types';
+import { Category, CreateTransaction, UpdateTransaction } from '../common/types';
 import prisma from '../db/prismaClient';
 
 class TransactionService {
@@ -24,7 +24,7 @@ class TransactionService {
 			amount: amount,
 			date: new Date(date),
 			type: type,
-			category: category,
+			category: type === 'EXPENSE' ? category : Category.OTHER,
 			description: description,
 		}
 
@@ -48,6 +48,27 @@ class TransactionService {
 			} else if (type === 'INCOME') {
 				newBalance = account.balance + amount;
 			}
+
+			if (type === 'EXPENSE') {
+				const budget = await prisma.budget.findFirst({
+					where: {
+						userId,
+						category: transaction.category,
+					},
+				})
+
+				await prisma.budget.update({
+					where: {
+						id: budget?.id
+					},
+					data: {
+						amount: {
+							decrement: transaction.amount,
+						},
+					},
+				})
+			}
+
 			await prisma.account.update({
 				where: { id: accountId },
 				data: { balance: newBalance },
@@ -126,6 +147,23 @@ class TransactionService {
 				userId,
 			},
 		});
+
+		const budget = await prisma.budget.findFirst({
+			where: {
+				userId,
+				category: transaction.category,
+			},
+		})
+		await prisma.budget.update({
+			where: {
+				id: budget?.id
+			},
+			data: {
+				amount: {
+					increment: transaction.amount,
+				},
+			},
+		})
 
 		await prisma.account.update({
 			where: { id: accountId },

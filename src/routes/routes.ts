@@ -4,6 +4,7 @@ import { userRoutes } from './user.routes';
 import { accountRoutes } from './account.routes';
 import { transactionRoutes } from './transaction.routes';
 import { budgetRoutes } from './budget.routes';
+import { reportRoutes } from './report.routes';
 
 const BASE_PATH = '/api/v1'
 
@@ -13,4 +14,5 @@ export const appRoutes = (app: Application) => {
 	app.use(`${BASE_PATH}/account`, accountRoutes())
 	app.use(`${BASE_PATH}/transaction`, transactionRoutes())
 	app.use(`${BASE_PATH}/budget`, budgetRoutes())
+	app.use(`${BASE_PATH}/report`, reportRoutes())
 }
