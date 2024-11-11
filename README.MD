@@ -13,7 +13,7 @@ This RESTful API enables users to manage their personal finances effectively. Us
 - **Login**: `POST /auth/login`
   - Authenticates users and provides a JWT token for secure future requests.
 - **Password Reset**: `POST /auth/reset-password`
-  - Sends an email with a password reset link to the user.
+  - Let user reset their password.
 - **Logout**: `POST /auth/logout`
   - Invalidates the user’s session by deactivating their token.
 
